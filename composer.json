@@ -1,0 +1,21 @@
+{
+  "name": "dakujem/peat",
+  "license": "Unlicense",
+  "keywords": ["vite", "bridge"],
+  "authors": [
+    {
+      "name": "Andrej Rypák",
+      "email": "xrypak@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.4 || ^8",
+    "ext-json": "*",
+    "symfony/polyfill-php80": "^1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dakujem\\Peat\\": "src/"
+    }
+  }
+}

@@ -52,37 +52,4 @@ final class ViteBridge
             },
         );
     }
-
-    /**
-     * @experimental
-     * @deprecated This function is experimental. Use at your own risk. May be removed without prior notice.
-     * @todo causes 1-2 second rendering hang.
-     * @internal I really do not want you to use this :-)
-     */
-    public static function makeEntryLocatorWithServerDetector(
-        string $manifestFile,
-        string $cacheFile,
-        string $assetPath = '', // tightly bound to Vite's `build.outDir`, if it targets the public dir's subdirs.
-        ?string $devServerUrl = null,
-        ?callable $detector = null,
-        bool $strict = false
-    ): ViteLocatorContract {
-        if ($devServerUrl === null) {
-            // No detection needed.
-            return self::makePassiveEntryLocator($manifestFile, $cacheFile, $assetPath, null, $strict);
-        }
-        // First, try the dev server,
-        // then the bundle,
-        // finally, when strict, kick the bucket.
-        return new CollectiveLocator(
-            new ConditionalLocator(
-                $detector ?? ViteServerDetector::usingCurl($devServerUrl),
-                new ViteServerLocator($devServerUrl)
-            ),
-            new ViteBuildLocator($manifestFile, $cacheFile, $assetPath, $strict),
-            $strict ? function (string $name) {
-                throw new RuntimeException('Not found: ' . $name);
-            } : null,
-        );
-    }
 }

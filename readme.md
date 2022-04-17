@@ -101,17 +101,35 @@ export default defineConfig({
 });
 ```
 
-Then, use the bridge like this:
+Register a service in your service container:
 ```php
-$vite = ViteBridge::makePassiveEntryLocator(
+$bridgeService = new ViteBridge(
     manifestFile: ROOT_DIR . '/public/placeholder/manifest.json',
     cacheFile: TEMP_DIR . '/vite.php',   // can be any writable file
     assetPath: 'placeholder',   // path from /public to the dir where the manifest is located
-    devServerUrl: $development ? 'http://localhost:3000' : null,
+    devServerUrl: 'http://localhost:3000',
 );
+```
 
-$html = (string) $vite->entry('src/main.js');
+And use it:
+```php
+$locator = $bridgeService->makePassiveEntryLocator(useDevServer: $isDevelopment);
+$html = (string) $locator->entry('src/main.js');
 ```
 
 The above will feed all the necessary HTML tags for `main.js` entrypoint to the `$html` variable,
-for both the _devleopment server_ and any _bundle_ (depending on the `$development` variable).
+for both the _devleopment server_ and any _bundle_ (depending on the `$isDevelopment` variable).
+
+You may want to register a method that uses the locator to be called from within your templates.
+
+To populate cache, run:
+```php
+$bridgeService->populateCache();
+```
+
+
+## Compat**ibility
+
+Please note that this tool (Peat) is tightly coupled with the workings of Vite.
+
+Currently, Peat supports Vite version `^2`.

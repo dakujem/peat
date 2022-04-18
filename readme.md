@@ -12,7 +12,9 @@ It provides a way to generate `<script>` and `<link>` tags to desired assets.
 
 ## Vite
 
-Vite has 2 parts: _development server_ and _bundler_.
+Vite consists of 2 parts:
+- _development server_
+- and _bundler_.
 
 To integrate a JS app, the backend must output snippets like these:
 - files from a _bundle_ (production)
@@ -128,8 +130,14 @@ $bridgeService->populateCache();
 ```
 
 
-## Compat**ibility
+## Compatibility
 
 Please note that this tool (Peat) is tightly coupled with the workings of Vite.
 
 Currently, Peat supports Vite version `^2`.
+
+| PHP       | Peat | Vite |
+|:----------|:-----|:-----|
+| 7.4 - 8.1 | 1.*  | 2.*  |
+
+

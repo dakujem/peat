@@ -141,3 +141,6 @@ Currently, Peat supports Vite version `^2`.
 | 7.4 - 8.1 | 1.*  | 2.*  |
 
 
+## Integrations
+
+- [Vitte: Vite bridge for Latte templates (Nette Framework)](https://github.com/viaaurea/vitte)

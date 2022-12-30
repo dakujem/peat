@@ -8,14 +8,15 @@ use LogicException;
 use RuntimeException;
 
 /**
- * Vite entry locator factory.
+ * A factory service providing Vite entry locators.
+ * Also provides capability to populate a PHP cache file.
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
 final class ViteBridge
 {
     private string $manifestFile;
-    private string $cacheFile;
+    private ?string $cacheFile;
     private string $assetPath;
     private ?string $devServerUrl;
     private bool $strict;
@@ -24,14 +25,14 @@ final class ViteBridge
      * The $assetPath can be used to force absolute paths or set the base path. Ignored by the dev server.
      *
      * @param string $manifestFile Path to the Vite-generated manifest json file.
-     * @param string $cacheFile This is where this locator stores (and reads from) its cache file. Must be writable.
+     * @param string|null $cacheFile This is where this locator stores (and reads from) its cache file. Must be writable.
      * @param string $assetPath This will typically be relative path from the public dir to the dir with assets, or empty string ''.
      * @param ?string $devServerUrl Vite's dev server URL (development only).
      * @param bool $strict Locators throw exceptions in strict mode, silently fail in lax mode.
      */
     public function __construct(
         string $manifestFile,
-        string $cacheFile,
+        ?string $cacheFile = null,
         string $assetPath = '',
         ?string $devServerUrl = null,
         bool $strict = false

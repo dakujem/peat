@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Dakujem\Peat;
 
+use LogicException;
 use RuntimeException;
 use Throwable;
 
 /**
- * Serves file links from a Vite bundle.
- * Allows for pre-generation of a cache file for improved performance.
+ * Serves file links from a Vite-generated bundle.
+ * Allows for pre-generation of a PHP cache file for improved performance.
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
@@ -18,18 +19,18 @@ final class ViteBuildLocator implements ViteLocatorContract
     private ?array $map = null;
     private string $assetPath;
     private string $manifestFile;
-    private string $cacheFile;
+    private ?string $cacheFile;
     private bool $strict;
 
     /**
      * @param string $manifestFile Path to the Vite-generated manifest json file.
-     * @param string $cacheFile This is where this locator stores (and reads from) its cache file. Must be writable.
+     * @param string|null $cacheFile This is where this locator stores (and reads from) its cache file. Must be writable.
      * @param string $assetPath This will typically be relative path from the public dir to the dir with assets, or empty string ''.
      * @param bool $strict In strict mode (default), an exception is thrown on invalid read of the manifest file.
      */
     public function __construct(
         string $manifestFile,
-        string $cacheFile,
+        ?string $cacheFile = null,
         string $assetPath = '',
         bool $strict = true
     ) {
@@ -82,6 +83,9 @@ final class ViteBuildLocator implements ViteLocatorContract
      */
     public function populateCache(): self
     {
+        if ($this->cacheFile === null) {
+            throw new LogicException('Path to where a cache file can be written has not been provided.');
+        }
         $map = $this->readManifest(
             $this->manifestFile,
             $this->strict,
@@ -102,11 +106,11 @@ final class ViteBuildLocator implements ViteLocatorContract
 
     private function loadFileOptionally(?string $file) // :mixed
     {
-        if ($file !== null) {
-            $foo = @include $file;
-            return $foo !== false ? $foo : null;
+        if ($file === null) {
+            return null;
         }
-        return null;
+        $foo = @include $file;
+        return $foo !== false ? $foo : null;
     }
 
     /**

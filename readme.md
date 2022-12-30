@@ -108,7 +108,7 @@ Register a service in your service container:
 $bridgeService = new ViteBridge(
     manifestFile: ROOT_DIR . '/public/my-js-widget/manifest.json',
     cacheFile: TEMP_DIR . '/vite.php',   // can be any writable file
-    assetPath: 'my-js-widget',   // path from /public to the dir where the manifest is located
+    assetPath: 'my-js-widget',   // relative path from /public to the dir where the manifest is located
     devServerUrl: 'http://localhost:5173',
 );
 ```

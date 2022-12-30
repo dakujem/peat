@@ -77,7 +77,7 @@ If it does not, check the entry name and the Vite server URL and port.
 Next, to test a bundle,\
 build a bundle by running `npm run build`,\
 move the dist files into your PHP server public root directory (or configure `build.outDir` option),\
-then replace the previous snippet with this one:
+then replace the previous snippet with this one (replace `my-js-widget` with a proper dir):
 ```php
 <?php echo Dakujem\Peat\ViteHelper::extractAssets('src/main.js', './my-js-widget/manifest.json', '/my-js-widget'); ?>
 ```

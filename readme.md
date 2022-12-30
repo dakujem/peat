@@ -71,8 +71,9 @@ then drop this into the HTML template:
 ```php
 <?php echo Dakujem\Peat\ViteHelper::populateDevelopmentAssets('src/main.js', 'http://localhost:5173'); ?>
 ```
-It should produce `<script>` tags to development assets and the JS app should load from the server.
+It should produce `<script>` tags to development assets and the JS app should load from the server.\
 If it does not, check the entry name and the Vite server URL and port.
+The entry name should align with `build.rollupOptions.input` option.
 
 Next, to test a bundle,\
 build a bundle by running `npm run build`,\

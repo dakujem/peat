@@ -61,10 +61,42 @@ More info in the [Vite's Backend integration guide](https://vitejs.dev/guide/bac
 > so that you don't have to move the build files manually after each build.
 
 
+### Troubleshooting configuration
+
+The simplest way to test if the configuration works is by dropping these snippets
+into your PHP-served HTML templates and observing the output.
+
+Start the development servers (both Vite `npm run serve` and PHP),\
+then drop this into the HTML template:
+```php
+<?php echo Dakujem\Peat\ViteHelper::populateDevelopmentAssets('src/main.js', 'http://localhost:5173'); ?>
+```
+It should produce `<script>` tags to development assets and the JS app should load from the server.
+If it does not, check the entry name and the Vite server URL and port.
+
+Next, to test a bundle,\
+build a bundle by running `npm run build`,\
+move the dist files into your PHP server public root directory (or configure `build.outDir` option),\
+then replace the previous snippet with this one:
+```php
+<?php echo Dakujem\Peat\ViteHelper::extractAssets('src/main.js', './my-js-widget/manifest.json', '/my-js-widget'); ?>
+```
+It should produce `<script>` and `<link>` tags for your JS and CSS.\
+Pay attention to the path to the manifest file, as it will change according to where you run the snippet from. Adjust as needed.\
+Understand that `'./my-js-widget/manifest.json'` is a server path, while `'/my-js-widget'` is a URL prefix of the assets
+(that is, where you moved the dist files to, relative to the PHP script in your public root).
+
+Once this works, I suggest you move on to configure the bridge service (see below).
+
+> P.S.:\
+> If none of this works, read the [Vite's Backend integration guide](https://vitejs.dev/guide/backend-integration.html),
+> try to figure out what HTML serves your JS app correctly, then compare it to what Peat outputs and tweak the variables.
+
+
 ## Bridge usage
 
 Either `ViteBridge::makePassiveEntryLocator` friction reducer can be used,
-or custom entry locator setup can be composed.
+or custom entry locator setup can be composed (see `ViteBridge` source code).
 
 To pre-generate cache for production, use `ViteBundleLocator::populateCache`.
 

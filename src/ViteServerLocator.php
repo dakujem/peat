@@ -30,9 +30,10 @@ final class ViteServerLocator implements ViteLocatorContract
     /**
      * If the server URL is set, this call always returns a URL, because it does not detect existence of the asset.
      */
-    public function entry(string $name): ?ViteEntryAsset
+    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset
     {
         if ($this->liveHost !== null) {
+            // Note: Relative offset is ignored in this setup on purpose.
             return $this->serveLive($name, $this->liveHost);
         }
         return null;

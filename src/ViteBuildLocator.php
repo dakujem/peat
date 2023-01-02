@@ -50,16 +50,17 @@ final class ViteBuildLocator implements ViteLocatorContract
      * The asset object can be type cast to string containing HTML tags.
      *
      * @param string $name asset entry name, as found in the Vite-generated manifest.json
+     * @param string|null $relativeOffset utilized when relative asset paths are in use
      * @return ViteEntryAsset|null
      */
-    public function entry(string $name): ?ViteEntryAsset
+    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset
     {
         $map = $this->loadAssetMap();
         $chunk = $map[$name] ?? null;
         if ($chunk === null) {
             return null;
         }
-        $path = fn(?string $v): ?string => $v !== null ? $this->assetPathPrefix . $v : null;
+        $path = fn(?string $v): ?string => $v !== null ? $this->buildPath($v, $relativeOffset) : null;
         $imports = array_filter(
             array_map(fn(string $import) => $path($map[$import]['file'] ?? null), $chunk['imports'] ?? [])
         );
@@ -67,6 +68,15 @@ final class ViteBuildLocator implements ViteLocatorContract
             array_merge([$path($chunk['file']),], $imports),
             array_map($path, $chunk['css'] ?? []),
         );
+    }
+
+    private function buildPath(string $asset, ?string $relativeOffset = null): string
+    {
+        $base = $this->assetPathPrefix;
+        if ($relativeOffset !== null && $relativeOffset !== '') {
+            $relativeOffset = ($base !== '' && $base !== '/' ? '/' : '') . trim($relativeOffset, '/') . '/';
+        }
+        return $base . $relativeOffset . $asset;
     }
 
     /**

@@ -72,11 +72,11 @@ final class ViteBuildLocator implements ViteLocatorContract
 
     private function buildPath(string $asset, ?string $relativeOffset = null): string
     {
-        $base = $this->assetPathPrefix;
+        $basePrefix = $this->assetPathPrefix;
         if ($relativeOffset !== null && $relativeOffset !== '') {
-            $relativeOffset = ($base !== '' && $base !== '/' ? '/' : '') . trim($relativeOffset, '/') . '/';
+            $relativeOffset = rtrim($relativeOffset, '/') . '/';
         }
-        return $base . $relativeOffset . $asset;
+        return $relativeOffset . $basePrefix . $asset;
     }
 
     /**

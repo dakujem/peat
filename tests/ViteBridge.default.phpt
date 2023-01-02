@@ -131,6 +131,62 @@ class _DefaultExampleViteBridgeTest extends TestCase
         );
     }
 
+    public function testDevelopmentServerLocatorWithOffset()
+    {
+        $bridgeService = $this->getBridgeService();
+        $locator = $bridgeService->makePassiveEntryLocator(true);
+
+        // main entry (offsets are ignored)
+        $assets = $locator->entry('main.js', '../..');
+        Assert::notNull($assets, 'Server locator not working');
+        Assert::same(
+            '<script type="module" src="http://localhost:5173/@vite/client"></script>' .
+            "\n" .
+            '<script type="module" src="http://localhost:5173/main.js"></script>',
+            (string)$assets,
+            'Localhost url of dev server not provided',
+        );
+
+        // secondary entry (offsets are ignored)
+        $assets = $locator->entry('views/foo.js', '../..');
+        Assert::notNull($assets, 'Server locator not working');
+        Assert::same(
+            '<script type="module" src="http://localhost:5173/@vite/client"></script>' .
+            "\n" .
+            '<script type="module" src="http://localhost:5173/views/foo.js"></script>',
+            (string)$assets,
+            'Localhost url of dev server not provided',
+        );
+    }
+
+    public function testBundleLocatorWithOffset()
+    {
+        $bridgeService = $this->getBridgeService();
+        $locator = $bridgeService->makePassiveEntryLocator(false);
+
+        // main entry
+        $assets = $locator->entry('main.js', '../..');
+        Assert::notNull($assets, 'Build locator not working');
+        Assert::same(
+            '<script type="module" src="../../my-js-widget/assets/main.4889e940.js"></script>' .
+            "\n" .
+            '<link rel="stylesheet" href="../../my-js-widget/assets/main.b82dbe22.css" />',
+            (string)$assets,
+            'Bundle asset URLs don\'t work',
+        );
+
+        // secondary entry
+        $assets = $locator->entry('views/foo.js', '../..');
+        Assert::notNull($assets, 'Build locator not working');
+        Assert::same(
+            '<script type="module" src="../../my-js-widget/assets/foo.869aea0d.js"></script>' .
+            "\n" .
+            '<script type="module" src="../../my-js-widget/assets/shared.83069a53.js"></script>',
+            (string)$assets,
+            'Bundle asset URLs don\'t work',
+        );
+    }
+
     private function getBridgeService()
     {
         return new ViteBridge(

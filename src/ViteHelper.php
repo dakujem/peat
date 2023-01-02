@@ -22,17 +22,19 @@ final class ViteHelper
      *
      * @param string $entryName typically `main.js`
      * @param string $manifestFile server path to Vite-generated manifest file
-     * @param string $assetPathPrefix relative path from your document root (/public, /www, /web, etc.) to the dir where the manifest file is located
+     * @param string $assetPathPrefix absolute or relative path from your document root (/public, /www, /web, etc.) to the dir where the manifest file is located
+     * @param string|null $relativeOffset offset of the current script to the public root; this value comes before $assetPathPrefix and is used when $assetPathPrefix contains a relative path
      * @return ViteEntryAsset
      */
     public static function extractAssets(
         string $entryName,
         string $manifestFile,
-        string $assetPathPrefix = ''
+        string $assetPathPrefix = '',
+        ?string $relativeOffset = null
     ): ViteEntryAsset {
         $bridgeService = new ViteBridge($manifestFile, null, $assetPathPrefix);
         $locator = $bridgeService->makePassiveEntryLocator();
-        $entry = $locator->entry($entryName);
+        $entry = $locator->entry($entryName, $relativeOffset);
         if ($entry === null) {
             throw new RuntimeException(sprintf('Vite entry named %s not found in given manifest located at %s.', $entryName, $manifestFile));
         }

@@ -84,8 +84,9 @@ then replace the previous snippet with this one (replace `my-js-widget` with a p
 ```
 It should produce `<script>` and `<link>` tags for your JS and CSS.\
 Pay attention to the path to the manifest file, as it will change according to where you run the snippet from. Adjust as needed.\
-Understand that `'./my-js-widget/manifest.json'` is a server path, while `'/my-js-widget'` is a URL prefix of the assets
-(that is, where you moved the dist files to, relative to the PHP script in your public root).
+Understand that `'./my-js-widget/manifest.json'` is a server path, while `'/my-js-widget'` is part of a URL prefixing the assets
+(that is, where you moved the dist files to, relative to the PHP script in your public root).\
+Also note that '/my-js-widget' is absolute, you may need to add your project's base path or use relative offsets (see below).
 
 Once this works, I suggest you move on to configure the bridge service (see below).
 
@@ -135,7 +136,7 @@ Configure `ViteBridge` service along these lines:
 $bridgeService = new ViteBridge(
     manifestFile: ROOT_DIR . '/public/my-js-widget/manifest.json',
     cacheFile: TEMP_DIR . '/vite.php',   // can be any writable file
-    assetPathPrefix: 'my-js-widget',   // all asset paths from the manifest will be prefixed by this value
+    assetPathPrefix: '/my-js-widget',   // all asset paths from the manifest will be prefixed by this value
     devServerUrl: 'http://localhost:5173',
 );
 ```
@@ -205,6 +206,25 @@ as one of the build steps during the deployment/CI process.
 > If you are not using a deployment pipeline or CI for deployment,
 > I suggest you compare file timestamps of the cache file and the manifest file,
 > or include the cache file in your cache-purging process.
+
+
+## Handling relative paths
+
+So far we used **absolute paths** to the assets. Which is **recommended**.
+
+> 💡
+>
+> The `assetPathPrefix` should contain the **project's base path** plus path to the manifest file and should be absolute.
+
+However, if you need to use relative paths, you are able to.
+
+`ViteLocatorContract::entry` method accepts second parameter called **"relative offset"**,
+which is designed for cases where `assetPathPrefix` needs to be prefixed per-call.
+
+The parameter should be used in scripts that are not located in public document root.\
+The parameter should typically contain strings like `..`, `../..`, etc. leading to the public root.
+
+Do not use this parameter when using absolute paths, as it will break the generated URIs.
 
 
 ## Advanced use

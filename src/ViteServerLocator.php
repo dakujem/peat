@@ -47,6 +47,7 @@ final class ViteServerLocator implements ViteLocatorContract
             [
                 $host . '/' . self::CLIENT_SCRIPT,
                 $host . '/' . $asset,
+//                $host . '/' . ltrim($asset, '/'), // this would not be coherent with build locator
             ],
         );
     }

@@ -22,3 +22,5 @@ composer.lock
 #
 tests/output/*
 !tests/output/.gitkeep
+tests/workdir/*
+!tests/workdir/.gitkeep

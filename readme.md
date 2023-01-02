@@ -135,7 +135,7 @@ Configure `ViteBridge` service along these lines:
 $bridgeService = new ViteBridge(
     manifestFile: ROOT_DIR . '/public/my-js-widget/manifest.json',
     cacheFile: TEMP_DIR . '/vite.php',   // can be any writable file
-    assetPath: 'my-js-widget',   // relative path from /public to the dir where the manifest is located
+    assetPathPrefix: 'my-js-widget',   // all asset paths from the manifest will be prefixed by this value
     devServerUrl: 'http://localhost:5173',
 );
 ```

@@ -17,7 +17,7 @@ final class ViteBridge
 {
     private string $manifestFile;
     private ?string $cacheFile;
-    private string $assetPath;
+    private string $assetPathPrefix;
     private ?string $devServerUrl;
     private bool $strict;
 
@@ -26,20 +26,20 @@ final class ViteBridge
      *
      * @param string $manifestFile Path to the Vite-generated manifest json file.
      * @param string|null $cacheFile This is where this locator stores (and reads from) its cache file. Must be writable.
-     * @param string $assetPath This will typically be relative path from the public dir to the dir with assets, or empty string ''.
+     * @param string $assetPathPrefix This will typically be relative path from the public dir to the dir with assets, or empty string ''.
      * @param ?string $devServerUrl Vite's dev server URL (development only).
      * @param bool $strict Locators throw exceptions in strict mode, silently fail in lax mode.
      */
     public function __construct(
         string $manifestFile,
         ?string $cacheFile = null,
-        string $assetPath = '',
+        string $assetPathPrefix = '',
         ?string $devServerUrl = null,
         bool $strict = false
     ) {
         $this->manifestFile = $manifestFile;
         $this->cacheFile = $cacheFile;
-        $this->assetPath = $assetPath;
+        $this->assetPathPrefix = $assetPathPrefix;
         $this->devServerUrl = $devServerUrl;
         $this->strict = $strict;
     }
@@ -61,7 +61,12 @@ final class ViteBridge
             return new ViteServerLocator($this->devServerUrl);
         }
         // Otherwise, the assets are served from a bundle (build).
-        $bundleLocator = new ViteBuildLocator($this->manifestFile, $this->cacheFile, $this->assetPath, $this->strict);
+        $bundleLocator = new ViteBuildLocator(
+            $this->manifestFile,
+            $this->cacheFile,
+            $this->assetPathPrefix,
+            $this->strict,
+        );
         if (!$this->strict) {
             return $bundleLocator;
         }
@@ -80,7 +85,12 @@ final class ViteBridge
      */
     public function populateCache(): void
     {
-        (new ViteBuildLocator($this->manifestFile, $this->cacheFile, $this->assetPath, $this->strict))
+        (new ViteBuildLocator(
+            $this->manifestFile,
+            $this->cacheFile,
+            $this->assetPathPrefix,
+            $this->strict,
+        ))
             ->populateCache();
     }
 }

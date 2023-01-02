@@ -89,32 +89,26 @@ Understand that `'./my-js-widget/manifest.json'` is a server path, while `'/my-j
 
 Once this works, I suggest you move on to configure the bridge service (see below).
 
-> P.S.:\
-> If none of this works, read the [Vite's Backend integration guide](https://vitejs.dev/guide/backend-integration.html),
-> try to figure out what HTML serves your JS app correctly, then compare it to what Peat outputs and tweak the variables.
+> 💡
+>
+> If none of the above works, read the [Vite's Backend integration guide](https://vitejs.dev/guide/backend-integration.html),
+> try to figure out what HTML serves your JS app correctly,
+> then compare it to what Peat outputs
+> and tweak the variables accordingly.
 
 
 ## Bridge usage
 
-Either `ViteBridge::makePassiveEntryLocator` friction reducer can be used,
-or custom entry locator setup can be composed (see `ViteBridge` source code).
+The most straight-forward way is to register `ViteBridge` as a service in your service container.
 
-To pre-generate cache for production, use `ViteBundleLocator::populateCache`.
+Depending on your running environment,
+this service would create a suitable "entry locator" (`ViteLocatorContract`),
+which populates assets for Vite entries.
 
 To get asset URLs (or HTML tags), use the `ViteLocatorContract::entry` method (see the example below).
 
 
-### Cache
-
-It is also possible to improve performance
-by exporting the manifest contents into a PHP cache file,
-then including it instead of parsing the JSON file.
-
-This is achieved by calling `ViteBuildLocator::populateCache()`
-as one of the build steps during the deployment/ci process.
-
-
-## Example
+### Example
 
 Assume JS sources are located in `<project>/js/src` and the public dir is `<project>/public`,
 `my-js-widget` may be replaced with any path.
@@ -136,7 +130,7 @@ export default defineConfig({
 });
 ```
 
-Register a service in your service container:
+Configure `ViteBridge` service along these lines:
 ```php
 $bridgeService = new ViteBridge(
     manifestFile: ROOT_DIR . '/public/my-js-widget/manifest.json',
@@ -146,21 +140,84 @@ $bridgeService = new ViteBridge(
 );
 ```
 
-And use it:
+And use it directly:
 ```php
 $locator = $bridgeService->makePassiveEntryLocator(useDevServer: $isDevelopment);
 $html = (string) $locator->entry('src/main.js');
 ```
 
+Then later in a template
+```php
+<head>
+  <?php echo $html; ?>
+</head>
+```
+
 The above will feed all the necessary HTML tags for `main.js` entrypoint to the `$html` variable,
 for both the _devleopment server_ and any _bundle_ (depending on the `$isDevelopment` variable).
 
-You may want to register a method that uses the locator to be called from within your templates.
+You may want to register a method that uses the locator to be called from within your templates, something like this
+```php
+$vite = function (string $entryName) use ($locator) {
+    return $locator->entry($entryName)
+}
+```
 
-To populate cache, run:
+Then later in a template you would only call
+```php
+<head>
+  <?php echo $vite('src/main.js'); ?>
+</head>
+```
+
+In Twig or Latte, for example, you may register a filter to be used as follows
+```twig
+<head>
+  {{ vite('src/main.js') }}
+</head>
+```
+
+
+## Production setup
+
+In production environments, performance is critical.
+
+To avoid reading and parsing the JSON manifest file on every request,
+Peat allows you to parse the JSON manifest contents once and export them as a PHP file.
+Peat then includes that optimized file instead of reading the JSON manifest.
+
+> 💡
+>
+> Be sure to enable this caching mechanism in production environments.
+> In high load scenarios, including a tiny PHP file is **much faster** than parsing a JSON file on every request.
+
+To populate the cache file for production, call `ViteBundleLocator::populateCache`.
 ```php
 $bridgeService->populateCache();
 ```
+
+However,
+this file **must be re-populated** every time the manifest file changes (on every Vite build).
+
+This is achieved by calling `ViteBuildLocator::populateCache()`
+as one of the build steps during the deployment/CI process.
+
+> If you are not using a deployment pipeline or CI for deployment,
+> I suggest you compare file timestamps of the cache file and the manifest file,
+> or include the cache file in your cache-purging process.
+
+
+## Advanced use
+
+Instead of using `ViteBridge::makePassiveEntryLocator` friction reducer,
+a custom entry locator setup can be composed.
+The locator must implement `ViteLocatorContract` interface.
+
+Two locators are provided to help you compose your own locator setup:
+- `CollectiveLocator` works with plain callables or other locators to create a locator stack (fallback)
+- `ConditionalLocator` allows to add runtime conditions to enable/disable a locator in a stack
+
+See `ViteBridge` source code for inspiration.
 
 
 ## Compatibility

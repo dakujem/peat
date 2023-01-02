@@ -224,7 +224,7 @@ See `ViteBridge` source code for inspiration.
 
 Please note that this tool (Peat) is tightly coupled with the workings of Vite.
 
-Currently, Peat supports Vite versions `2` and above.
+Currently, Peat supports Vite versions `v2`, `v3`, `v4` and later.
 
 | PHP       | Peat | Vite.js   |
 |:----------|:-----|:----------|

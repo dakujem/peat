@@ -12,7 +12,7 @@
   "require": {
     "php": "^7.4 || ^8",
     "ext-json": "*",
-    "symfony/polyfill-php80": "^1"
+    "symfony/polyfill-php80": "^1.15"
   },
   "require-dev": {
     "nette/tester": "^2.4.1",

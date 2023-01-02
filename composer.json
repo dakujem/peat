@@ -1,5 +1,6 @@
 {
   "name": "dakujem/peat",
+  "description": "PHP-Vite.js bridging tool, framework-agnostic",
   "license": "Unlicense",
   "keywords": ["vite", "bridge"],
   "authors": [

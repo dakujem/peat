@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dakujem\Trest;
 
 define('ROOT', __DIR__);
-define('FIXTURES', __DIR__.'./fixtures');
+define('FIXTURES', __DIR__.'/fixtures');
 define('TEMP', __DIR__ . '/workdir');
 
 require_once __DIR__ . '/../vendor/autoload.php';

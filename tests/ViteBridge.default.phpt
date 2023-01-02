@@ -82,6 +82,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
 
         // main entry
         $assets = $locator->entry('main.js');
+        Assert::notNull($assets, 'Server locator not working');
         Assert::same(
             '<script type="module" src="http://localhost:5173/@vite/client"></script>' .
             "\n" .
@@ -92,6 +93,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
 
         // secondary entry
         $assets = $locator->entry('views/foo.js');
+        Assert::notNull($assets, 'Server locator not working');
         Assert::same(
             '<script type="module" src="http://localhost:5173/@vite/client"></script>' .
             "\n" .
@@ -108,6 +110,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
 
         // main entry
         $assets = $locator->entry('main.js');
+        Assert::notNull($assets, 'Build locator not working');
         Assert::same(
             '<script type="module" src="my-js-widget/assets/main.4889e940.js"></script>' .
             "\n" .
@@ -118,6 +121,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
 
         // secondary entry
         $assets = $locator->entry('views/foo.js');
+        Assert::notNull($assets, 'Build locator not working');
         Assert::same(
             '<script type="module" src="my-js-widget/assets/foo.869aea0d.js"></script>' .
             "\n" .

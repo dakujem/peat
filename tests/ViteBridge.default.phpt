@@ -138,6 +138,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
             TEMP . '/vite.default.php',
             'my-js-widget',
             'http://localhost:5173',
+            true,
         );
     }
 

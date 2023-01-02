@@ -13,9 +13,23 @@
     "ext-json": "*",
     "symfony/polyfill-php80": "^1"
   },
+  "require-dev": {
+    "nette/tester": "^2.4.1",
+    "tracy/tracy": "^2.8.9"
+  },
   "autoload": {
     "psr-4": {
       "Dakujem\\Peat\\": "src/"
     }
+  },
+  "scripts": {
+    "test": "@test:local",
+    "test:local": "@php vendor/nette/tester/src/tester tests -C --colors 1",
+    "test:ci": "tester tests"
+  },
+  "scripts-descriptions": {
+    "test": "Run application tests. (defaults to local tests)",
+    "test:local": "Run application tests with local configuration.",
+    "test:ci": "Run application tests, provide configuration options as needed."
   }
 }

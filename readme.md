@@ -1,5 +1,9 @@
 # Peat
 
+![PHP from Packagist](https://img.shields.io/packagist/php-v/dakujem/peat)
+[![Test Suite](https://github.com/dakujem/peat/actions/workflows/php-test.yml/badge.svg)](https://github.com/dakujem/peat/actions/workflows/php-test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/dakujem/peat/badge.svg?branch=feat/friction-reducer)](https://coveralls.io/github/dakujem/peat?branch=feat/friction-reducer)
+
 PHP-Vite bridge building tool, for any framework.
 
 > 💿 `composer require dakujem/peat`

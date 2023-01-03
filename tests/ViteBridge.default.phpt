@@ -22,6 +22,9 @@ class _DefaultExampleViteBridgeTest extends TestCase
 {
     protected function setUp()
     {
+        if (file_exists(TEMP . '/vite.default.php')) {
+            unlink(TEMP . '/vite.default.php');
+        }
         parent::setUp();
     }
 
@@ -297,6 +300,45 @@ class _DefaultExampleViteBridgeTest extends TestCase
             '<script type="module" src="/assets/shared.83069a53.js"></script>',
             (string)$assets,
             'Prefix reflected in URLs',
+        );
+    }
+
+    public function testCachePopulation()
+    {
+        $bridgeService = $this->getBridgeService();
+        $bridgeService->populateCache();
+
+        $filename = TEMP . '/vite.default.php';
+        Assert::true(file_exists($filename), 'Cache file has not been written.');
+        $map = require $filename;
+        Assert::type('array', $map);
+        Assert::same(3, sizeof($map));
+
+        Assert::same(['main.js', 'views/foo.js', '_shared.83069a53.js'], array_keys($map));
+
+        // now use invalid manifest to see reading from the cache file
+        $bridgeService2 = new ViteBridge(
+            FIXTURES . '/invalid.json',
+            $filename,
+            '/something',
+        );
+        $locator = $bridgeService2->makePassiveEntryLocator(false);
+
+        $assets = $locator->entry('main.js');
+        Assert::same(
+            '<script type="module" src="/something/assets/main.4889e940.js"></script>' .
+            "\n" .
+            '<link rel="stylesheet" href="/something/assets/main.b82dbe22.css" />',
+            (string)$assets,
+            'Prefix reflected in URLs',
+        );
+        $assets = $locator->entry('views/foo.js');
+        Assert::same(
+            '<script type="module" src="/something/assets/foo.869aea0d.js"></script>' .
+            "\n" .
+            '<script type="module" src="/something/assets/shared.83069a53.js"></script>',
+            (string)$assets,
+            'Loaded from cache',
         );
     }
 }

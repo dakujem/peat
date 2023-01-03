@@ -28,11 +28,12 @@ final class CollectiveLocator implements ViteLocatorContract
         }
     }
 
-    public function entry(string $name): ?ViteEntryAsset
+    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset
     {
-        $entryName = ltrim($name, '/');
         foreach ($this->locators as $step) {
-            $asset = $step instanceof ViteLocatorContract ? $step->entry($entryName) : $step($entryName);
+            $asset = $step instanceof ViteLocatorContract ?
+                $step->entry($name, $relativeOffset) :
+                $step($name, $relativeOffset);
             if ($asset !== null) {
                 return $asset;
             }

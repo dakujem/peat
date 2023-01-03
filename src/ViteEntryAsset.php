@@ -45,8 +45,8 @@ final class ViteEntryAsset implements Stringable, JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'modules' => $this->modules(),
-            'css' => $this->css(),
+            'modules' => $this->modules,
+            'css' => $this->css,
         ];
     }
 }

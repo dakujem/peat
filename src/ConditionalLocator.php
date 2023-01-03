@@ -13,12 +13,12 @@ final class ConditionalLocator implements ViteLocatorContract
 {
     /** @var callable */
     private $condition;
-    private ViteLocatorContract $serverLocator;
+    private ViteLocatorContract $locator;
 
     public function __construct(callable $condition, ViteLocatorContract $locator)
     {
         $this->condition = $condition;
-        $this->serverLocator = $locator;
+        $this->locator = $locator;
     }
 
     public function __invoke(string $entryName): ?ViteEntryAsset
@@ -26,8 +26,10 @@ final class ConditionalLocator implements ViteLocatorContract
         return $this->entry($entryName);
     }
 
-    public function entry(string $name): ?ViteEntryAsset
+    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset
     {
-        return ($this->condition)($name) ? $this->serverLocator->entry($name) : null;
+        return ($this->condition)($name, $relativeOffset) ?
+            $this->locator->entry($name, $relativeOffset) :
+            null;
     }
 }

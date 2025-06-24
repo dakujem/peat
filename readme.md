@@ -39,7 +39,7 @@ For best development experience, we only want to care about `main.js` as the ent
 Ideally, we want to achieve something like the following:
 ```html
   <!-- PHP template -->
-  <?php echo vite('main.js'); ?>
+  <?= vite('main.js') ?>
   
   <!-- or other templating systems, like Twig -->
   {{ vite('main.js') }}
@@ -73,7 +73,7 @@ into your PHP-served HTML templates and observing the output.
 Start the development servers (both Vite `npm run serve` and PHP),\
 then drop this into the HTML template:
 ```php
-<?php echo Dakujem\Peat\ViteHelper::populateDevelopmentAssets('src/main.js', 'http://localhost:5173'); ?>
+<?= Dakujem\Peat\ViteHelper::populateDevelopmentAssets('src/main.js', 'http://localhost:5173') ?>
 ```
 It should produce `<script>` tags to development assets and the JS app should load from the server.\
 If it does not, check the entry name and the Vite server URL and port.
@@ -84,7 +84,7 @@ build a bundle by running `npm run build`,\
 move the dist files into your PHP server public root directory (or configure `build.outDir` option),\
 then replace the previous snippet with this one (replace `my-js-widget` with a proper dir):
 ```php
-<?php echo Dakujem\Peat\ViteHelper::extractAssets('src/main.js', './my-js-widget/manifest.json', '/my-js-widget'); ?>
+<?= Dakujem\Peat\ViteHelper::extractAssets('src/main.js', './my-js-widget/manifest.json', '/my-js-widget') ?>
 ```
 It should produce `<script>` and `<link>` tags for your JS and CSS.\
 Pay attention to the path to the manifest file, as it will change according to where you run the snippet from. Adjust as needed.\
@@ -154,7 +154,7 @@ $html = (string) $locator->entry('src/main.js');
 Then later in a template
 ```php
 <head>
-  <?php echo $html; ?>
+  <?= $html ?>
 </head>
 ```
 
@@ -171,7 +171,7 @@ $vite = function (string $entryName) use ($locator) {
 Then later in a template you would only call
 ```php
 <head>
-  <?php echo $vite('src/main.js'); ?>
+  <?= $vite('src/main.js') ?>
 </head>
 ```
 

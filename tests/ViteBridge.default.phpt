@@ -122,6 +122,19 @@ class _DefaultExampleViteBridgeTest extends TestCase
             'Bundle asset URLs don\'t work',
         );
 
+        Assert::same(
+            ['my-js-widget/assets/main.4889e940.js'],
+            $assets->modules(),
+        );
+        Assert::same(
+            ['my-js-widget/assets/main.b82dbe22.css'],
+            $assets->css(),
+        );
+        Assert::same(
+            ['my-js-widget/assets/asset.0ab0f9cd.png'],
+            $assets->assets(),
+        );
+
         // secondary entry
         $assets = $locator->entry('views/foo.js');
         Assert::notNull($assets, 'Build locator not working');
@@ -132,6 +145,13 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Bundle asset URLs don\'t work',
         );
+
+        Assert::same(
+            ['my-js-widget/assets/foo.869aea0d.js', 'my-js-widget/assets/shared.83069a53.js'],
+            $assets->modules(),
+        );
+        Assert::same([], $assets->css());
+        Assert::same([], $assets->assets());
     }
 
     public function testDevelopmentServerLocatorWithOffset()
@@ -149,6 +169,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Localhost url of dev server not provided',
         );
+        Assert::same([], $assets->assets());
 
         // secondary entry (offsets are ignored)
         $assets = $locator->entry('views/foo.js', '../..');
@@ -160,6 +181,7 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Localhost url of dev server not provided',
         );
+        Assert::same([], $assets->assets());
     }
 
     public function testBundleLocatorWithOffset()
@@ -176,6 +198,10 @@ class _DefaultExampleViteBridgeTest extends TestCase
             '<link rel="stylesheet" href="../../my-js-widget/assets/main.b82dbe22.css" />',
             (string)$assets,
             'Bundle asset URLs don\'t work',
+        );
+        Assert::same(
+            ['../../my-js-widget/assets/asset.0ab0f9cd.png'],
+            $assets->assets(),
         );
 
         // secondary entry
@@ -239,6 +265,11 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Prefix reflected in URLs',
         );
+        Assert::same(
+            ['prefix/assets/asset.0ab0f9cd.png'],
+            $assets->assets(),
+        );
+
         $assets = $locator->entry('views/foo.js');
         Assert::same(
             '<script type="module" src="prefix/assets/foo.869aea0d.js"></script>' .
@@ -266,6 +297,11 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Prefix reflected in URLs',
         );
+        Assert::same(
+            ['assets/asset.0ab0f9cd.png'],
+            $assets->assets(),
+        );
+
         $assets = $locator->entry('views/foo.js');
         Assert::same(
             '<script type="module" src="assets/foo.869aea0d.js"></script>' .
@@ -274,6 +310,8 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Prefix reflected in URLs',
         );
+        Assert::same([], $assets->css());
+        Assert::same([], $assets->assets());
     }
 
     public function testSlashPrefixSetting()
@@ -332,6 +370,19 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Prefix reflected in URLs',
         );
+        Assert::same(
+            ['/something/assets/main.4889e940.js'],
+            $assets->modules(),
+        );
+        Assert::same(
+            ['/something/assets/main.b82dbe22.css'],
+            $assets->css(),
+        );
+        Assert::same(
+            ['/something/assets/asset.0ab0f9cd.png'],
+            $assets->assets(),
+        );
+
         $assets = $locator->entry('views/foo.js');
         Assert::same(
             '<script type="module" src="/something/assets/foo.869aea0d.js"></script>' .
@@ -340,6 +391,12 @@ class _DefaultExampleViteBridgeTest extends TestCase
             (string)$assets,
             'Loaded from cache',
         );
+        Assert::same(
+            ['/something/assets/foo.869aea0d.js', '/something/assets/shared.83069a53.js'],
+            $assets->modules(),
+        );
+        Assert::same([], $assets->css());
+        Assert::same([], $assets->assets());
     }
 }
 

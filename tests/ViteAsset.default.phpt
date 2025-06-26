@@ -25,12 +25,13 @@ class _DefaultViteAssetTest extends TestCase
         Assert::same('', (string)$asset);
         Assert::same([], $asset->modules());
         Assert::same([], $asset->css());
-        Assert::same(['modules' => [], 'css' => [],], $asset->jsonSerialize());
+        Assert::same([], $asset->assets());
+        Assert::same(['modules' => [], 'css' => [], 'assets' => [],], $asset->jsonSerialize());
     }
 
     public function testNonEmptyAsset()
     {
-        $asset = new ViteEntryAsset(['a', 'b'], ['c', 'd']);
+        $asset = new ViteEntryAsset(['a', 'b'], ['c', 'd'], ['e', 'f']);
 
         Assert::same('<script type="module" src="a"></script>' . "\n" .
             '<script type="module" src="b"></script>' . "\n" .
@@ -39,7 +40,7 @@ class _DefaultViteAssetTest extends TestCase
             , (string)$asset);
         Assert::same(['a', 'b'], $asset->modules());
         Assert::same(['c', 'd'], $asset->css());
-        Assert::same(['modules' => ['a', 'b'], 'css' => ['c', 'd'],], $asset->jsonSerialize());
+        Assert::same(['modules' => ['a', 'b'], 'css' => ['c', 'd'], 'assets' => ['e', 'f'],], $asset->jsonSerialize());
     }
 }
 

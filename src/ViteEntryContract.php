@@ -15,7 +15,18 @@ use Stringable;
  */
 interface ViteEntryContract extends Stringable, JsonSerializable
 {
+    /**
+     * JavaScript modules to be imported.
+     */
     public function modules(): array;
 
+    /**
+     * CSS files to be linked.
+     */
     public function css(): array;
+
+    /**
+     * Other static assets referenced in the modules or CSS that may be preloaded.
+     */
+    public function assets(): array;
 }

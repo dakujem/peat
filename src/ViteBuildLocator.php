@@ -67,6 +67,7 @@ final class ViteBuildLocator implements ViteLocatorContract
         return new ViteEntryAsset(
             array_merge([$path($chunk['file']),], $imports),
             array_map($path, $chunk['css'] ?? []),
+            array_map($path, $chunk['assets'] ?? []),
         );
     }
 

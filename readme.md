@@ -268,9 +268,9 @@ Please note that this tool (Peat) is tightly coupled with the workings of Vite.
 
 Currently, Peat supports Vite versions `v2`, `v3`, `v4` and later.
 
-| PHP       | Peat | Vite.js   |
-|:----------|:-----|:----------|
-| 7.4 - 8.* | 1.*  | 2.* - 4.* |
+| PHP       | Peat | Vite.js               |
+|:----------|:-----|:----------------------|
+| 7.4 - 8.* | 1.*  | 2.* - 7.* (and above) |
 
 > Unless there is a breaking change in the way Vite.js generates its `manifest.json` file,
 > Peat will remain compatible with future versions of Vite.js.

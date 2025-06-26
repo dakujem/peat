@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dakujem\Peat;
 
+use JsonException;
 use LogicException;
 use RuntimeException;
 use Throwable;
@@ -50,8 +51,7 @@ final class ViteBuildLocator implements ViteLocatorContract
      * The asset object can be type cast to string containing HTML tags.
      *
      * @param string $name asset entry name, as found in the Vite-generated manifest.json
-     * @param string|null $relativeOffset utilized when relative asset paths are in use
-     * @return ViteEntryAsset|null
+     * @param string|null $relativeOffset Use this offset to prefix asset URLs per entry.
      */
     public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset
     {
@@ -151,7 +151,14 @@ final class ViteBuildLocator implements ViteLocatorContract
         }
         try {
             if ($raw) {
-                return json_decode($raw, true);
+                $contents = json_decode($raw, true);
+
+                if ($error = json_last_error()) {
+                    // ... or use JSON_THROW_ON_ERROR flag instead?
+                    throw new JsonException(json_last_error_msg(), $error);
+                }
+
+                return $contents;
             }
         } catch (Throwable $e) {
             if ($strict) {

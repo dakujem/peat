@@ -11,9 +11,11 @@ use Stringable;
  * Asset object containing links to JS modules and CSS.
  * The asset object can be type cast to string containing HTML tags or processed manually.
  *
+ * Note: This is meant to be dumped in the <head> tag and only contains JS and CSS, not other static assets from the manifest.
+ *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-final class ViteEntryAsset implements Stringable, JsonSerializable
+final class ViteEntryAsset implements ViteEntryContract
 {
     private array $modules;
     private array $css;

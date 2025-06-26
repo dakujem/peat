@@ -11,5 +11,5 @@ namespace Dakujem\Peat;
  */
 interface ViteLocatorContract
 {
-    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryAsset;
+    public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryContract;
 }

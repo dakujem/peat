@@ -9,7 +9,10 @@ use RuntimeException;
 /**
  * A friction reducer used for simple scripts and easy integration, or for configuration troubleshooting.
  *
- * Do not use this in high-load production environments for performance reasons (see readme for information).
+ * Do NOT use this in high-load production environments for performance reasons - the cache file is not used.
+ * See readme for information on how to set the cache file generation for production use.
+ * @see ViteBridge::populateCache()
+ * @link ../readme.md
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
@@ -26,16 +29,15 @@ final class ViteHelper
      * @param string $manifestFile server path to Vite-generated manifest file
      * @param string $assetPathPrefix absolute or relative path from your document root (/public, /www, /web, etc.) to the dir where the manifest file is located
      * @param string|null $relativeOffset offset of the current script to the public root; this value comes before $assetPathPrefix and is used when $assetPathPrefix contains a relative path
-     * @return ViteEntryAsset
      */
     public static function extractAssets(
         string $entryName,
         string $manifestFile,
         string $assetPathPrefix = '',
         ?string $relativeOffset = null
-    ): ViteEntryAsset {
+    ): ViteEntryContract {
         $bridgeService = new ViteBridge($manifestFile, null, $assetPathPrefix);
-        $locator = $bridgeService->makePassiveEntryLocator();
+        $locator = $bridgeService->makeBundleEntryLocator();
         $entry = $locator->entry($entryName, $relativeOffset);
         if ($entry === null) {
             throw new RuntimeException(sprintf('Vite entry named %s not found in given manifest located at %s.', $entryName, $manifestFile));
@@ -49,12 +51,11 @@ final class ViteHelper
      *
      * @param string $entryName typically `main.js`
      * @param string $developmentServerUrl the URL where Vite server listens, by default this would be http://localhost:5173
-     * @return ViteEntryAsset
      */
     public static function populateDevelopmentAssets(
         string $entryName,
         string $developmentServerUrl
-    ): ViteEntryAsset {
+    ): ViteEntryContract {
         return (new ViteServerLocator($developmentServerUrl))->entry($entryName);
     }
 }

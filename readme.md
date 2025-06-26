@@ -89,13 +89,13 @@ then replace the previous snippet with this one (replace `my-js-widget` with a p
 ```php
 <?= Dakujem\Peat\ViteHelper::extractAssets(
     entryName: 'src/main.js',
-    manifestFile: './my-js-widget/manifest.json',   // server path
-    assetPathPrefix: '/my-js-widget',               // asset URL prefix
+    manifestFile: './my-js-widget/.vite/manifest.json', // server path
+    assetPathPrefix: '/my-js-widget',                   // asset URL prefix
 ) ?>
 ```
 It should produce `<script>` and `<link>` tags for your JS and CSS.\
 Pay attention to the path to the manifest file, as it will change according to where you run the snippet from. Adjust as needed.\
-Understand that `'./my-js-widget/manifest.json'` is a server path, while `'/my-js-widget'` is part of a URL prefixing the assets
+Understand that `'./my-js-widget/.vite/manifest.json'` is a server path, while `'/my-js-widget'` is part of a URL prefixing the assets
 (that is, where you moved the dist files to, relative to the PHP script in your public root).\
 Also note that '/my-js-widget' is absolute, you may need to add your project's base path or use relative offsets (see below).
 
@@ -132,8 +132,9 @@ import {defineConfig} from "vite";
 
 export default defineConfig({
   build: {
-    manifest: true,
+    manifest: true, // create the manifest file at {outDir}/.vite/manifest.json
     outDir: '../public/my-js-widget', // output directly to the public dir
+    assetsDir: '', // do not nest the assets under '/assets'
     rollupOptions: {
       // overwrite default .html entrypoint
       input: 'src/main.js',
@@ -142,13 +143,20 @@ export default defineConfig({
 });
 ```
 
+>
+> 💡
+>
+> The above configuration is an example, use whatever suits your needs.
+> Remember to configure the `ViteBridge` accordingly, though.
+>
+
 Configure `ViteBridge` service along these lines:
 
 ```php
 use Dakujem\Peat\ViteBridge;
 
 $bridgeService = new ViteBridge(
-    manifestFile: ROOT_DIR . '/public/my-js-widget/manifest.json',
+    manifestFile: ROOT_DIR . '/public/my-js-widget/.vite/manifest.json',
     cacheFile: TEMP_DIR . '/vite.php',   // can be any writable file
     assetPathPrefix: '/my-js-widget',   // this value will prefix all asset URLs from the manifest
     devServerUrl: 'http://localhost:5173',

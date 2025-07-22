@@ -17,9 +17,9 @@ namespace Dakujem\Peat;
 final class DetectTellFileOnce implements ViteLocatorContract
 {
     private string $tellFileName;
+    private ?string $fallbackServerUrl;
     private ?ViteLocatorContract $locator = null;
     private bool $alreadyAttempted = false;
-    private ?string $fallbackServerUrl;
 
     public function __construct(
         string $tellFileName,
@@ -31,15 +31,24 @@ final class DetectTellFileOnce implements ViteLocatorContract
 
     public function entry(string $name, ?string $relativeOffset = null): ?ViteEntryContract
     {
-        if ($this->alreadyAttempted) {
-            return $this->locateEntryOrBail($name, $relativeOffset);
+        if (!$this->alreadyAttempted) {
+            $this->alreadyAttempted = true;
+            $this->locator = $this->createLocatorIfServerDetected();
         }
 
-        $this->alreadyAttempted = true;
+        if (null === $this->locator) {
+            return null;
+        }
 
+        // If the dev server's URL is known, all asset entries will be directed to it.
+        return $this->locator->entry($name, $relativeOffset);
+    }
+
+    private function createLocatorIfServerDetected(): ?ViteLocatorContract
+    {
         // The dev server is detected by the presence of a "tell" file.
         if (!file_exists($this->tellFileName)) {
-            return $this->locateEntryOrBail($name, $relativeOffset);
+            return null;
         }
 
         // The "tell" file may optionally contain a URL the dev server is listening to.
@@ -51,20 +60,11 @@ final class DetectTellFileOnce implements ViteLocatorContract
         // When no server URL is known, fall back to the provided URL, if any.
         $devServerUrl ??= $this->fallbackServerUrl;
 
-        // If the dev server's URL is known, all asset entries will be directed to it.
-        if ($devServerUrl !== null) {
-            $this->locator = new ViteServerLocator($devServerUrl);
-        }
-
-        return $this->locateEntryOrBail($name, $relativeOffset);
-    }
-
-    private function locateEntryOrBail(string $name, ?string $relativeOffset = null): ?ViteEntryContract
-    {
-        if (null === $this->locator) {
+        if ($devServerUrl === null) {
             return null;
         }
 
-        return $this->locator->entry($name, $relativeOffset);
+        // If the dev server's URL is known, all asset entries will be directed to it.
+        return new ViteServerLocator($devServerUrl);
     }
 }

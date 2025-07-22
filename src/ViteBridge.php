@@ -19,7 +19,7 @@ final class ViteBridge
     private ?string $cacheFile;
     private string $assetPathPrefix;
     private ?string $devServerUrl;
-    private bool $strict;
+    private ?bool $strict;
 
     /**
      * The $assetPath can be used to force absolute paths or set the base path. Ignored by the dev server.
@@ -35,7 +35,7 @@ final class ViteBridge
         ?string $cacheFile = null,
         string $assetPathPrefix = '',
         ?string $devServerUrl = null,
-        bool $strict = false
+        ?bool $strict = null
     ) {
         $this->manifestFile = $manifestFile;
         $this->cacheFile = $cacheFile;
@@ -52,7 +52,7 @@ final class ViteBridge
         ?string $cacheFile = null,
         string $assetPathPrefix = '',
         ?string $devServerUrl = null,
-        bool $strict = false
+        ?bool $strict = null
     ): ViteLocatorContract {
         $locators = [];
 
@@ -63,6 +63,10 @@ final class ViteBridge
                 $devServerUrl,
             );
         }
+
+        // Assume strict mode by default only when development server detection is on.
+        // The detection should only be on in development environments.
+        $strict ??= $detectDevelopmentServer;
 
         // The bundle locator is always active and is the default.
         // When the dev server detection is off, the assets are served from a bundle (build).
@@ -109,7 +113,7 @@ final class ViteBridge
             $this->assetPathPrefix,
             $this->devServerUrl,
             $this->cacheFile,
-            $this->strict,
+            $this->strict ?? true, // Note: Strict mode default is `true` here for compatibility reasons only.
         );
     }
 
@@ -154,13 +158,14 @@ final class ViteBridge
      */
     public function makeBundleEntryLocator(): ViteLocatorContract
     {
+        $strict = $this->strict ?? true; // Note: Strict mode default is `true` here for compatibility reasons only.
         $bundleLocator = new ViteBuildLocator(
             $this->manifestFile,
             $this->cacheFile,
             $this->assetPathPrefix,
-            $this->strict,
+            $strict,
         );
-        if (!$this->strict) {
+        if (!$strict) {
             return $bundleLocator;
         }
         // In strict mode, the final step is to throw an exception.
@@ -182,7 +187,7 @@ final class ViteBridge
             $this->manifestFile,
             $this->cacheFile,
             $this->assetPathPrefix,
-            $this->strict,
+            $this->strict ?? true,
         ))
             ->populateCache();
     }

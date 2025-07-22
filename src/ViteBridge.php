@@ -44,6 +44,50 @@ final class ViteBridge
         $this->strict = $strict;
     }
 
+    // TODO create a separate friction reducer
+    public static function makeEntryLocator(
+        bool $detectDevelopmentServer,
+        string $devServerTellFileName,
+        string $manifestFile,
+        string $assetPathPrefix = '',
+        ?string $devServerUrl = null,
+        ?string $cacheFile = null,
+        bool $strict = false
+    ): ViteLocatorContract {
+        $locators = [];
+
+        // The detection should not run in production.
+        if ($detectDevelopmentServer) {
+            $locators[] = new DetectTellFileOnce(
+                $devServerTellFileName,
+                $devServerUrl,
+            );
+        }
+
+        // The bundle locator is always active and is the default.
+        // When the dev server detection is off, the assets are served from a bundle (build).
+        $locators[] = new ViteBuildLocator(
+            $manifestFile,
+            $cacheFile,
+            $assetPathPrefix,
+            $strict,
+        );
+
+        if ($strict) {
+            // In strict mode, the final step is to throw an exception.
+            $locators[] = function (string $name) {
+                throw new RuntimeException('Not found: ' . $name);
+            };
+        }
+
+        // This is a micro optimization: When there is only a single detector (the `ViteBuildLocator`), return it directly.
+        if (count($locators) === 1) {
+            return $locators[0];
+        }
+
+        return new CollectiveLocator(...$locators);
+    }
+
     /**
      * Returns a preconfigured asset entry locator.
      * The method attempts to tell if the dev server is running by detecting the presence of a "tell" file.
@@ -51,35 +95,20 @@ final class ViteBridge
      *
      * @param bool $detectServer Set this to `false` in production or when the assets should always be located from a bundle.
      * @param string $tellFileName The location of the "tell" file.
-     * @param bool $readContentsAsUrl Decide whether the contents of the tell file should be used as the URL of the dev server or set to `false` to use the constructor argument.
      */
     public function makeServerTellEntryLocator(
         bool $detectServer,
-        string $tellFileName,
-        bool $readContentsAsUrl = true
+        string $tellFileName
     ): ViteLocatorContract {
-        if (!$detectServer) {
-            // When the server detection is off, the assets are served from a bundle (build).
-            return $this->makeBundleEntryLocator();
-        }
-
-        // The dev server is detected by the presence of a "tell" file.
-        if (!file_exists($tellFileName)) {
-            return $this->makeBundleEntryLocator();
-        }
-
-        // If the dev server is running, it serves all the assets.
-        $url = null;
-
-        // The "tell" file may optionally contain a URL the dev server is listening to.
-        if ($readContentsAsUrl) {
-            $url = file_get_contents($tellFileName);
-            if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                $url = null;
-            }
-        }
-
-        return $this->makeDevServerEntryLocator($url);
+        return self::makeEntryLocator(
+            $detectServer,
+            $tellFileName,
+            $this->manifestFile,
+            $this->assetPathPrefix,
+            $this->devServerUrl,
+            $this->cacheFile,
+            $this->strict,
+        );
     }
 
     /**

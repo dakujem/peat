@@ -45,7 +45,7 @@ final class ViteBridge
     }
 
     // TODO create a separate friction reducer
-    public static function makeEntryLocator(
+    public static function populateEntryLocator(
         bool $detectDevelopmentServer,
         string $devServerTellFile,
         string $manifestFile,
@@ -89,18 +89,20 @@ final class ViteBridge
     }
 
     /**
-     * Returns a preconfigured asset entry locator.
-     * The method attempts to tell if the dev server is running by detecting the presence of a "tell" file.
+     * Returns a preconfigured Vite asset entry locator.
+     * The method attempts to tell if a dev server is running by detecting the presence of a "tell" file.
      * Vite should be configured to create such a file when starting the dev server.
+     *
+     * In other cases use the `makePassiveEntryLocator` to manually switch between server and bundles.
      *
      * @param bool $detectServer Set this to `false` in production or when the assets should always be located from a bundle.
      * @param string $tellFileName The location of the "tell" file.
      */
-    public function makeServerTellEntryLocator(
+    public function makeEntryLocator(
         bool $detectServer,
         string $tellFileName
     ): ViteLocatorContract {
-        return self::makeEntryLocator(
+        return self::populateEntryLocator(
             $detectServer,
             $tellFileName,
             $this->manifestFile,
@@ -113,13 +115,13 @@ final class ViteBridge
 
     /**
      * Returns a preconfigured asset entry locator.
-     * The locator reads the manifest file (or cache file) and serves asset objects.
-     *
-     * If the $useDevServer is `true`, links to Vite dev server are returned by the locator.
-     *
      * This call does not detect whether the dev server is actually running or not (hence "passive").
+     * Use the `$useDevServer` parameter to switch between Vite development server and bundle.
      *
-     * @param bool $useDevServer Set this to `false` in production or when the assets should be located from a bundle.
+     * If the `$useDevServer` is `true`, links to Vite dev server are returned by the locator.
+     * Otherwise, the returned locator reads the manifest file (or cache file) and serves asset objects.
+     *
+     * @param bool $useDevServer Set this to `false` in production and when the assets should be located from a bundle. Set to `true` to use the development server.
      */
     public function makePassiveEntryLocator(
         bool $useDevServer = false

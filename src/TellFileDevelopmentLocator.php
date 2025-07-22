@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Dakujem\Peat;
 
 /**
+ * Vite entry locator for development environments.
+ *
  * This locator will check for the presence of a development server "tell" file once - upon the first entry lookup.
  * If it is present, it will attempt to read its contents for the server's URL.
  * A fallback URL may be provided for cases when the tell file does not contain a valid dev server URL.
@@ -14,7 +16,7 @@ namespace Dakujem\Peat;
  *
  * @author Andrej Rypak <xrypak@gmail.com>
  */
-final class DetectTellFileOnce implements ViteLocatorContract
+final class TellFileDevelopmentLocator implements ViteLocatorContract
 {
     private string $tellFileName;
     private ?string $fallbackServerUrl;

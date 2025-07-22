@@ -58,7 +58,7 @@ final class ViteBridge
 
         // The detection should not run in production.
         if ($detectDevelopmentServer) {
-            $locators[] = new DetectTellFileOnce(
+            $locators[] = new TellFileDevelopmentLocator(
                 $devServerTellFileName,
                 $devServerUrl,
             );

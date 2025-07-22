@@ -47,11 +47,11 @@ final class ViteBridge
     // TODO create a separate friction reducer
     public static function makeEntryLocator(
         bool $detectDevelopmentServer,
-        string $devServerTellFileName,
+        string $devServerTellFile,
         string $manifestFile,
+        ?string $cacheFile = null,
         string $assetPathPrefix = '',
         ?string $devServerUrl = null,
-        ?string $cacheFile = null,
         bool $strict = false
     ): ViteLocatorContract {
         $locators = [];
@@ -59,7 +59,7 @@ final class ViteBridge
         // The detection should not run in production.
         if ($detectDevelopmentServer) {
             $locators[] = new TellFileDevelopmentLocator(
-                $devServerTellFileName,
+                $devServerTellFile,
                 $devServerUrl,
             );
         }

@@ -113,7 +113,7 @@ final class ViteBridge
             $this->assetPathPrefix,
             $this->devServerUrl,
             $this->cacheFile,
-            $this->strict ?? true, // Note: Strict mode default is `true` here for compatibility reasons only.
+            $this->strict,
         );
     }
 
@@ -158,7 +158,7 @@ final class ViteBridge
      */
     public function makeBundleEntryLocator(): ViteLocatorContract
     {
-        $strict = $this->strict ?? true; // Note: Strict mode default is `true` here for compatibility reasons only.
+        $strict = $this->strict ?? false;
         $bundleLocator = new ViteBuildLocator(
             $this->manifestFile,
             $this->cacheFile,
@@ -187,7 +187,7 @@ final class ViteBridge
             $this->manifestFile,
             $this->cacheFile,
             $this->assetPathPrefix,
-            $this->strict ?? true,
+            $this->strict ?? false, // This should probably be strict by default because the warmup should be run during a CI build phase... Here I keep the default at `false` for compatibility reasons.
         ))
             ->populateCache();
     }

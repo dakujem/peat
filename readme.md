@@ -284,9 +284,10 @@ Currently, Peat supports Vite versions `v2` through `v8`.
 
 | PHP       | Peat | Vite.js               |
 |:----------|:-----|:----------------------|
-| 7.4 - 8.* | 1.*  | 2.* - 8.* (and above) |
+| 8.2 - 8.* | 1.*  | 2.* - 8.* (and above) |
 
 Notes:
+- Peat `1.0` and `1.1` also support PHP 7.4 - 8.1.
 - Vite 5 and later write the manifest to `{outDir}/.vite/manifest.json`, Vite 2 - 4 write `{outDir}/manifest.json`. Set the manifest file path accordingly.
 - Vite 8 renamed `build.rollupOptions` to `build.rolldownOptions`. The old name still works.
 - The experimental `build.chunkImportMap` option (Vite 8.1+) is not supported, Peat does not output the import map.

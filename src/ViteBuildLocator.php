@@ -66,9 +66,35 @@ final class ViteBuildLocator implements ViteLocatorContract
         );
         return new ViteEntryAsset(
             array_merge([$path($chunk['file']),], $imports),
-            array_map($path, $chunk['css'] ?? []),
+            array_map($path, $this->collectCss($map, $name)),
             array_map($path, $chunk['assets'] ?? []),
         );
+    }
+
+    /**
+     * Collects CSS files of a chunk, including CSS of all the chunks it imports statically (recursively).
+     * Dynamic imports are not followed.
+     *
+     * The order is the same as in Vite-generated HTML:
+     * CSS of the imported chunks comes first, the chunk's own CSS comes last, each file only once.
+     */
+    private function collectCss(array $map, string $name, array &$seenChunks = [], array &$seenCss = []): array
+    {
+        if (isset($seenChunks[$name]) || !isset($map[$name])) {
+            return [];
+        }
+        $seenChunks[$name] = true;
+        $css = [];
+        foreach ($map[$name]['imports'] ?? [] as $import) {
+            $css = array_merge($css, $this->collectCss($map, $import, $seenChunks, $seenCss));
+        }
+        foreach ($map[$name]['css'] ?? [] as $file) {
+            if (!isset($seenCss[$file])) {
+                $seenCss[$file] = true;
+                $css[] = $file;
+            }
+        }
+        return $css;
     }
 
     private function buildPath(string $asset, ?string $relativeOffset = null): string

@@ -290,6 +290,7 @@ Notes:
 - Vite 5 and later write the manifest to `{outDir}/.vite/manifest.json`, Vite 2 - 4 write `{outDir}/manifest.json`. Set the manifest file path accordingly.
 - Vite 8 renamed `build.rollupOptions` to `build.rolldownOptions`. The old name still works.
 - The experimental `build.chunkImportMap` option (Vite 8.1+) is not supported, Peat does not output the import map.
+- CSS-only entries (a stylesheet used as a build input) need Vite 3 or later. Vite 2 does not list them in the manifest.
 
 > Unless there is a breaking change in the way Vite.js generates its `manifest.json` file,
 > Peat will remain compatible with future versions of Vite.js.

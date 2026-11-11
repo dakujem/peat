@@ -81,6 +81,26 @@ class _ViteBuildsTest extends TestCase
         Assert::same(['/w/' . $shared['css'][0]], $asset->css());
     }
 
+    /**
+     * @dataProvider versions
+     */
+    public function testCssOnlyEntry(string $version)
+    {
+        $asset = $this->locator($version)->entry('src/standalone.css');
+        if ($version === '2') {
+            // Vite 2 does not list CSS-only entries in the manifest
+            Assert::null($asset);
+            return;
+        }
+        $m = $this->manifest($version);
+        Assert::same([], $asset->modules());
+        Assert::same(['/w/' . $m['src/standalone.css']['file']], $asset->css());
+        Assert::same(
+            '<link rel="stylesheet" href="/w/' . $m['src/standalone.css']['file'] . '" />',
+            (string)$asset,
+        );
+    }
+
     private function sharedChunkKey(array $manifest): string
     {
         foreach ($manifest as $key => $chunk) {

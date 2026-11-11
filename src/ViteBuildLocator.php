@@ -61,14 +61,29 @@ final class ViteBuildLocator implements ViteLocatorContract
             return null;
         }
         $path = fn(?string $v): ?string => $v !== null ? $this->buildPath($v, $relativeOffset) : null;
-        $imports = array_filter(
-            array_map(fn(string $import) => $path($map[$import]['file'] ?? null), $chunk['imports'] ?? [])
-        );
+        $css = $this->collectCss($map, $name);
+        if ($this->isStylesheet($chunk['file'] ?? null)) {
+            // A CSS-only entry (a stylesheet used as a build input) is a stylesheet, not a JS module.
+            if (!in_array($chunk['file'], $css, true)) {
+                $css[] = $chunk['file'];
+            }
+            $modules = [];
+        } else {
+            $imports = array_filter(
+                array_map(fn(string $import) => $path($map[$import]['file'] ?? null), $chunk['imports'] ?? [])
+            );
+            $modules = array_merge([$path($chunk['file']),], $imports);
+        }
         return new ViteEntryAsset(
-            array_merge([$path($chunk['file']),], $imports),
-            array_map($path, $this->collectCss($map, $name)),
+            $modules,
+            array_map($path, $css),
             array_map($path, $chunk['assets'] ?? []),
         );
+    }
+
+    private function isStylesheet(?string $file): bool
+    {
+        return $file !== null && strtolower(substr($file, -4)) === '.css';
     }
 
     /**

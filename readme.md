@@ -55,9 +55,10 @@ and the browser will load the rest of the files as ES modules.
 Vite (`vite.config.js`) must be configured to output a _manifest_ file and override the default entrypoint:
 
 - `build.manifest` MUST be set to `true`
-- `build.rollupOptions.input` SHOULD point to the `main.js` (or other JS entrypoint)
+- `build.rolldownOptions.input` SHOULD point to the `main.js` (or other JS entrypoint);
+  use `build.rollupOptions.input` with Vite 7 and older (Vite 8 still accepts it as a deprecated alias)
 
-More info in the [Vite's Backend integration guide](https://vitejs.dev/guide/backend-integration.html).
+More info in the [Vite's Backend integration guide](https://vite.dev/guide/backend-integration).
 
 > 💡
 > 
@@ -70,7 +71,7 @@ More info in the [Vite's Backend integration guide](https://vitejs.dev/guide/bac
 The simplest way to test if the configuration works is by dropping these snippets
 into your PHP-served HTML templates and observing the output.
 
-Start the development servers (both Vite `npm run serve` and PHP),\
+Start the development servers (both Vite `npm run dev` and PHP),\
 then drop this into the HTML template:
 ```php
 <?= Dakujem\Peat\ViteHelper::populateDevelopmentAssets(
@@ -80,7 +81,12 @@ then drop this into the HTML template:
 ```
 It should produce `<script>` tags to development assets and the JS app should load from the server.\
 If it does not, check the entry name and the Vite server URL and port.
-The entry name should align with `build.rollupOptions.input` option.
+The entry name should align with `build.rolldownOptions.input` option (`build.rollupOptions.input` before Vite 8).
+
+> 💡
+>
+> Since Vite 6.0.9 the development server only allows cross-origin requests from `localhost` by default.
+> If the PHP app is served from another host (e.g. `myapp.test`), set `server.cors.origin` in `vite.config.js`.
 
 Next, to test a bundle,\
 build a bundle by running `npm run build`,\
@@ -103,7 +109,7 @@ Once this works, I suggest you move on to configure the bridge service (see belo
 
 > 💡
 >
-> If none of the above works, read the [Vite's Backend integration guide](https://vitejs.dev/guide/backend-integration.html),
+> If none of the above works, read the [Vite's Backend integration guide](https://vite.dev/guide/backend-integration),
 > try to figure out what HTML serves your JS app correctly,
 > then compare it to what Peat outputs
 > and tweak the variables accordingly.
@@ -132,10 +138,10 @@ import {defineConfig} from "vite";
 
 export default defineConfig({
   build: {
-    manifest: true, // create the manifest file at {outDir}/.vite/manifest.json
+    manifest: true, // create the manifest file at {outDir}/.vite/manifest.json (Vite 5+; {outDir}/manifest.json in Vite 2-4)
     outDir: '../public/my-js-widget', // output directly to the public dir
     assetsDir: '', // do not nest the assets under '/assets'
-    rollupOptions: {
+    rolldownOptions: { // "rollupOptions" in Vite 7 and older
       // overwrite default .html entrypoint
       input: 'src/main.js',
     }
@@ -214,7 +220,7 @@ Peat then includes that optimized file instead of reading the JSON manifest.
 > Be sure to enable this caching mechanism in production environments.
 > In high load scenarios, including a tiny PHP file is **much faster** than parsing a JSON file on every request.
 
-To populate the cache file for production, call `ViteBundleLocator::populateCache`.
+To populate the cache file for production, call `ViteBridge::populateCache()`.
 ```php
 $bridgeService->populateCache();
 ```
@@ -266,11 +272,16 @@ See `ViteBridge` source code for inspiration.
 
 Please note that this tool (Peat) is tightly coupled with the workings of Vite.
 
-Currently, Peat supports Vite versions `v2`, `v3`, `v4` and later.
+Currently, Peat supports Vite versions `v2` through `v8`.
 
 | PHP       | Peat | Vite.js               |
 |:----------|:-----|:----------------------|
-| 7.4 - 8.* | 1.*  | 2.* - 7.* (and above) |
+| 7.4 - 8.* | 1.*  | 2.* - 8.* (and above) |
+
+Notes:
+- Vite 5 and later write the manifest to `{outDir}/.vite/manifest.json`, Vite 2 - 4 write `{outDir}/manifest.json`. Set the manifest file path accordingly.
+- Vite 8 renamed `build.rollupOptions` to `build.rolldownOptions`. The old name still works.
+- The experimental `build.chunkImportMap` option (Vite 8.1+) is not supported, Peat does not output the import map.
 
 > Unless there is a breaking change in the way Vite.js generates its `manifest.json` file,
 > Peat will remain compatible with future versions of Vite.js.

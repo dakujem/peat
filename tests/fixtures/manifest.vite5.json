@@ -1,0 +1,65 @@
+{
+  "_shared-!~{005}~.js": {
+    "file": "assets/shared-YbeUx0a8.css",
+    "src": "_shared-!~{005}~.js"
+  },
+  "_shared-DcINmvoF.js": {
+    "file": "assets/shared-DcINmvoF.js",
+    "name": "shared",
+    "css": [
+      "assets/shared-YbeUx0a8.css"
+    ]
+  },
+  "src/bg.svg": {
+    "file": "assets/bg-_6v3PQ55.svg",
+    "src": "src/bg.svg"
+  },
+  "src/lazy.js": {
+    "file": "assets/lazy-DO4MXceL.js",
+    "name": "lazy",
+    "src": "src/lazy.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_shared-DcINmvoF.js"
+    ],
+    "css": [
+      "assets/lazy-xwbrHUwT.css"
+    ]
+  },
+  "src/logo.svg": {
+    "file": "assets/logo-B2LLnTBc.svg",
+    "src": "src/logo.svg"
+  },
+  "src/main.js": {
+    "file": "assets/main-BNuCMBD-.js",
+    "name": "main",
+    "src": "src/main.js",
+    "isEntry": true,
+    "imports": [
+      "_shared-DcINmvoF.js"
+    ],
+    "dynamicImports": [
+      "src/lazy.js"
+    ],
+    "css": [
+      "assets/main-DiOdy2cU.css"
+    ],
+    "assets": [
+      "assets/logo-B2LLnTBc.svg"
+    ]
+  },
+  "src/other.js": {
+    "file": "assets/other-DeKsx7Nt.js",
+    "name": "other",
+    "src": "src/other.js",
+    "isEntry": true,
+    "imports": [
+      "_shared-DcINmvoF.js"
+    ]
+  },
+  "src/standalone.css": {
+    "file": "assets/standalone-ZzeH1vt0.css",
+    "src": "src/standalone.css",
+    "isEntry": true
+  }
+}

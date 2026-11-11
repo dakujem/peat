@@ -1,0 +1,44 @@
+{
+  "src/main.js": {
+    "file": "assets/main.e5d23507.js",
+    "src": "src/main.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.82f4aa27.js"
+    ],
+    "dynamicImports": [
+      "src/lazy.js"
+    ],
+    "css": [
+      "assets/main.a8dd641e.css"
+    ],
+    "assets": [
+      "assets/logo.aab3732e.svg"
+    ]
+  },
+  "src/other.js": {
+    "file": "assets/other.dad6ce02.js",
+    "src": "src/other.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.82f4aa27.js"
+    ]
+  },
+  "_shared.82f4aa27.js": {
+    "file": "assets/shared.82f4aa27.js",
+    "css": [
+      "assets/shared.d9a0af08.css"
+    ]
+  },
+  "src/lazy.js": {
+    "file": "assets/lazy.46c24446.js",
+    "src": "src/lazy.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_shared.82f4aa27.js"
+    ],
+    "css": [
+      "assets/lazy.5aedc9d2.css"
+    ]
+  }
+}

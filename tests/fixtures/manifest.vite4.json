@@ -1,0 +1,69 @@
+{
+  "_shared-367d490e.js": {
+    "css": [
+      "assets/shared-a1d41c86.css"
+    ],
+    "file": "assets/shared-367d490e.js"
+  },
+  "shared.css": {
+    "file": "assets/shared-a1d41c86.css",
+    "src": "shared.css"
+  },
+  "src/bg.svg": {
+    "file": "assets/bg-37a276ad.svg",
+    "src": "src/bg.svg"
+  },
+  "src/lazy.css": {
+    "file": "assets/lazy-659fac33.css",
+    "src": "src/lazy.css"
+  },
+  "src/lazy.js": {
+    "css": [
+      "assets/lazy-659fac33.css"
+    ],
+    "file": "assets/lazy-20ebcc8d.js",
+    "imports": [
+      "_shared-367d490e.js"
+    ],
+    "isDynamicEntry": true,
+    "src": "src/lazy.js"
+  },
+  "src/logo.svg": {
+    "file": "assets/logo-aab3732e.svg",
+    "src": "src/logo.svg"
+  },
+  "src/main.css": {
+    "file": "assets/main-183d6f7d.css",
+    "src": "src/main.css"
+  },
+  "src/main.js": {
+    "assets": [
+      "assets/logo-aab3732e.svg"
+    ],
+    "css": [
+      "assets/main-183d6f7d.css"
+    ],
+    "dynamicImports": [
+      "src/lazy.js"
+    ],
+    "file": "assets/main-96f49fee.js",
+    "imports": [
+      "_shared-367d490e.js"
+    ],
+    "isEntry": true,
+    "src": "src/main.js"
+  },
+  "src/other.js": {
+    "file": "assets/other-a09027d5.js",
+    "imports": [
+      "_shared-367d490e.js"
+    ],
+    "isEntry": true,
+    "src": "src/other.js"
+  },
+  "src/standalone.css": {
+    "file": "assets/standalone-43a7fe01.css",
+    "isEntry": true,
+    "src": "src/standalone.css"
+  }
+}

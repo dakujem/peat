@@ -24,3 +24,6 @@ tests/output/*
 !tests/output/.gitkeep
 tests/workdir/*
 !tests/workdir/.gitkeep
+
+tests/vite/dist/
+tests/vite/node_modules/

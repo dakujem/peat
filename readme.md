@@ -282,12 +282,13 @@ Please note that this tool (Peat) is tightly coupled with the workings of Vite.
 
 Currently, Peat supports Vite versions `v2` through `v8`.
 
-| PHP       | Peat | Vite.js               |
-|:----------|:-----|:----------------------|
-| 8.2 - 8.* | 1.*  | 2.* - 8.* (and above) |
+| PHP       | Peat      | Vite.js               |
+|:----------|:----------|:----------------------|
+| 8.2 - 8.* | 1.2+      | 2.* - 8.* (and above) |
+| 7.4 - 8.* | 1.0 - 1.1 | 2.* - 8.*             |
 
 Notes:
-- Peat `1.0` and `1.1` also support PHP 7.4 - 8.1.
+- Peat `1.0` and `1.1` do not include the CSS of imported (shared) chunks and output CSS-only entries as `<script>` tags. Both are fixed in `1.2.1`.
 - Vite 5 and later write the manifest to `{outDir}/.vite/manifest.json`, Vite 2 - 4 write `{outDir}/manifest.json`. Set the manifest file path accordingly.
 - Vite 8 renamed `build.rollupOptions` to `build.rolldownOptions`. The old name still works.
 - The experimental `build.chunkImportMap` option (Vite 8.1+) is not supported, Peat does not output the import map.

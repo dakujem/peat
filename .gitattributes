@@ -1,0 +1,5 @@
+# Files not needed in the Composer package
+/.github export-ignore
+/tests export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
